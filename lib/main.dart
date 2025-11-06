@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'theme/app_colors.dart';
 import 'routes.dart';
 
 void main() {
@@ -15,7 +17,20 @@ class UniGoApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Roboto',
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+        scaffoldBackgroundColor: AppColors.background,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: AppColors.secondary,
+          background: AppColors.background,
+          surface: Colors.white,
+          primary: AppColors.primary,
+          secondary: AppColors.secondary,
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: AppColors.primary,
+          elevation: 0,
+          centerTitle: true,
+        ),
         useMaterial3: true,
       ),
       initialRoute: '/login',
