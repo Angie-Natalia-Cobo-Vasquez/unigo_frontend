@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../models/user.dart';
+import '../../services/auth_service.dart';
+
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -14,6 +17,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _birthDateController = TextEditingController();
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _lastnameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _birthDateController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +66,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
+                          final user = User(
+                            firstName: _nameController.text.trim(),
+                            lastName: _lastnameController.text.trim(),
+                            email: _emailController.text.trim(),
+                            password: _passwordController.text,
+                            birthDate: _birthDateController.text.trim(),
+                          );
+                          AuthService.instance.register(user);
+
+                          if (!mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Cuenta creada correctamente')),
                           );
+                          final navigator = Navigator.of(context);
                           Future.delayed(const Duration(seconds: 1), () {
-                            Navigator.pushReplacementNamed(context, '/login');
+                            navigator.pushReplacementNamed('/login');
                           });
                         }
                       },

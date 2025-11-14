@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
       passengers: 32,
       bio:
           'Soy Adrián Saavedra, estudiante de 5 semestre de Ingeniería Industrial en la UCEVA. Vivo en Buga y estaría encantado de llevarte. Leer más...',
-      imageUrl: 'assets/icons/image.png',
+      imageUrl: 'assets/images/adrian.png',
       ridePrice: 8000,
       city: 'Buga',
     ),
@@ -35,13 +35,32 @@ class _HomeScreenState extends State<HomeScreen> {
       passengers: 48,
       bio:
           'Conozco las rutas más rápidas y cómodas para llevarte a clase. Seguridad y puntualidad garantizadas.',
-      imageUrl: 'assets/icons/image.png',
+      imageUrl: 'assets/images/Hernandez.png',
       ridePrice: 10000,
       city: 'Andalucía',
     ),
   ];
 
   int _currentIndex = 0;
+
+  void _handleNavTap(int index) {
+    if (_currentIndex == index) return;
+    setState(() => _currentIndex = index);
+    switch (index) {
+      case 0:
+        Navigator.pushReplacementNamed(context, '/home');
+        break;
+      case 1:
+        Navigator.pushReplacementNamed(context, '/myTrips');
+        break;
+      case 2:
+        Navigator.pushReplacementNamed(context, '/favorites');
+        break;
+      case 3:
+        Navigator.pushReplacementNamed(context, '/profile');
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,16 +132,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     child: Row(
-                      children: const [
-                        Icon(Icons.search, color: AppColors.textSecondary),
-                        SizedBox(width: 12),
-                        Expanded(
+                      children: [
+                        const Icon(Icons.search, color: AppColors.textSecondary),
+                        const SizedBox(width: 12),
+                        const Expanded(
                           child: Text(
                             'Buscar',
                             style: TextStyle(color: AppColors.textSecondary),
                           ),
                         ),
-                        Icon(Icons.tune, color: AppColors.secondary),
+                        GestureDetector(
+                          onTap: () => Navigator.pushNamed(context, '/filterTrips'),
+                          child: const Icon(Icons.tune, color: AppColors.secondary),
+                        ),
                       ],
                     ),
                   ),
@@ -183,11 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: UniGoBottomNavBar(
         currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+        onTap: _handleNavTap,
       ),
     );
   }
@@ -297,27 +315,34 @@ class _DriverCard extends StatelessWidget {
                       children: [
                         const Icon(Icons.star, color: AppColors.warning, size: 18),
                         const SizedBox(width: 4),
-                        Text(
-                          '${driver.rating.toStringAsFixed(1)} (${driver.reviews} reseñas)',
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
+                        Expanded(
+                          child: Text(
+                            '${driver.rating.toStringAsFixed(1)} (${driver.reviews} reseñas)',
+                            style: const TextStyle(
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         const SizedBox(width: 12),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: AppColors.neutral,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Text(
-                            driver.vehicle,
-                            style: const TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
+                        Flexible(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: AppColors.neutral,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Text(
+                              driver.vehicle,
+                              style: const TextStyle(
+                                color: AppColors.textPrimary,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ),
@@ -341,7 +366,7 @@ class _DriverCard extends StatelessWidget {
                           ],
                         ),
                         Text(
-                          '4${driver.ridePrice.toStringAsFixed(0)}',
+                          '\$${driver.ridePrice.toStringAsFixed(0)}',
                           style: const TextStyle(
                             color: AppColors.textPrimary,
                             fontSize: 16,

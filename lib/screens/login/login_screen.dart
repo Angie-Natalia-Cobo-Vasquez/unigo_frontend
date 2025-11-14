@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../widgets/custom_textfield.dart';
+
+import '../../services/auth_service.dart';
 import '../../widgets/custom_button.dart';
+import '../../widgets/custom_textfield.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,8 +12,29 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void _handleLogin(BuildContext context) {
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+
+    final isValid = AuthService.instance.login(email, password);
+    if (isValid) {
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Credenciales inválidas')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 20),
             CustomButton(
               text: 'Entrar',
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/home');
-              },
+              onPressed: () => _handleLogin(context),
             ),
             const SizedBox(height: 12),
             GestureDetector(
@@ -46,7 +67,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(decoration: TextDecoration.underline)),
             ),
             const SizedBox(height: 6),
-            const Text('Recuperar contraseña'),
+            GestureDetector(
+              onTap: () => Navigator.pushNamed(context, '/passwordRecovery'),
+              child: const Text(
+                'Recuperar contraseña',
+                style: TextStyle(decoration: TextDecoration.underline),
+              ),
+            ),
           ],
         ),
       ),

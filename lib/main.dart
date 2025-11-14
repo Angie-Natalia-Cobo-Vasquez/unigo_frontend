@@ -20,7 +20,6 @@ class UniGoApp extends StatelessWidget {
         scaffoldBackgroundColor: AppColors.background,
         colorScheme: ColorScheme.fromSeed(
           seedColor: AppColors.secondary,
-          background: AppColors.background,
           surface: Colors.white,
           primary: AppColors.primary,
           secondary: AppColors.secondary,
