@@ -1,9 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 import 'theme/app_colors.dart';
 import 'routes.dart';
 
 void main() {
+  if (kIsWeb) {
+    setPathUrlStrategy();
+  }
   runApp(const UniGoApp());
 }
 

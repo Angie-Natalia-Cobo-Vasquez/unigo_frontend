@@ -22,18 +22,21 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _handleLogin(BuildContext context) {
+  Future<void> _handleLogin(BuildContext context) async {
     final email = emailController.text.trim();
     final password = passwordController.text;
 
-    final isValid = AuthService.instance.login(email, password);
-    if (isValid) {
+    final success = await AuthService.instance.login(email, password);
+    if (success) {
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Credenciales inválidas')),
-      );
-    }
+    } else if (!mounted) return;
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(AuthService.instance.error ?? 'Credenciales inválidas'),
+      ),
+    );
   }
 
   @override

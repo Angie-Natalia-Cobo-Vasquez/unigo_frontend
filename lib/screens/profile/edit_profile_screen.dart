@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/user.dart';
+import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/bottom_navbar.dart';
@@ -25,21 +25,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void initState() {
     super.initState();
     final user = AuthService.instance.currentUser ??
-        AuthService.instance.registeredUser ??
-        const User(
-          firstName: '',
-          lastName: '',
-          email: '',
+        const UserModel(
+          nombres: '',
+          apellidos: '',
+          correo: '',
+          telefono: '',
           password: '',
           birthDate: '',
         );
 
     _nameController = TextEditingController(text: user.fullName);
-    _emailController = TextEditingController(text: user.email);
+    _emailController = TextEditingController(text: user.correo);
     _passwordController = TextEditingController(text: user.password);
     _programController = TextEditingController(text: user.program);
     _birthDateController = TextEditingController(text: user.birthDate);
-    _phoneController = TextEditingController(text: user.phone);
+    _phoneController = TextEditingController(text: user.telefono);
   }
 
   @override
@@ -53,11 +53,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
-  void _handleSave() {
-    final currentUser =
-        AuthService.instance.currentUser ?? AuthService.instance.registeredUser;
+  Future<void> _handleSave() async {
+    final currentUser = AuthService.instance.currentUser;
 
     if (currentUser == null) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('No hay información de usuario para editar')),
       );
@@ -66,22 +66,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     final nameParts = _nameController.text.trim().split(' ');
     final updatedUser = currentUser.copyWith(
-      firstName: nameParts.isNotEmpty ? nameParts.first : '',
-      lastName: nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
-      email: _emailController.text.trim(),
+      nombres: nameParts.isNotEmpty ? nameParts.first : '',
+      apellidos: nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
+      correo: _emailController.text.trim(),
       password: _passwordController.text,
       program: _programController.text.trim(),
       birthDate: _birthDateController.text.trim(),
-      phone: _phoneController.text.trim(),
+      telefono: _phoneController.text.trim(),
     );
 
-    AuthService.instance.updateUser(updatedUser);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Perfil actualizado correctamente')),
-    );
-
-    Navigator.pop(context, true);
+    final success = await AuthService.instance.updateProfile(updatedUser);
+    
+    if (!mounted) return;
+    
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Perfil actualizado correctamente')),
+      );
+      Navigator.pop(context, true);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AuthService.instance.error ?? 'Error al actualizar el perfil'),
+        ),
+      );
+    }
   }
 
   @override

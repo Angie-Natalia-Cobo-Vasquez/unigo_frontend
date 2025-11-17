@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../models/user.dart';
+import 'package:unigo_frontend/models/user_model.dart';
 import '../../services/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -17,6 +16,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _birthDateController = TextEditingController();
+  DateTime? _selectedBirthDate;
 
   @override
   void dispose() {
@@ -64,25 +64,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30)),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          final user = User(
-                            firstName: _nameController.text.trim(),
-                            lastName: _lastnameController.text.trim(),
-                            email: _emailController.text.trim(),
+                          final user = UserModel(
+                            nombres: _nameController.text.trim(),
+                            apellidos: _lastnameController.text.trim(),
+                            correo: _emailController.text.trim(),
+                            telefono: '',
                             password: _passwordController.text,
-                            birthDate: _birthDateController.text.trim(),
+                            birthDate: _selectedBirthDate != null
+                                ? _formatDateForBackend(_selectedBirthDate!)
+                                : '',
                           );
-                          AuthService.instance.register(user);
+
+                          final success = await AuthService.instance.register(user);
 
                           if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Cuenta creada correctamente')),
-                          );
-                          final navigator = Navigator.of(context);
-                          Future.delayed(const Duration(seconds: 1), () {
-                            navigator.pushReplacementNamed('/login');
-                          });
+
+                          if (success) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Cuenta creada correctamente')),
+                            );
+                            final navigator = Navigator.of(context);
+                            Future.delayed(const Duration(seconds: 1), () {
+                              navigator.pushReplacementNamed('/login');
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  AuthService.instance.error ?? 'No se pudo crear la cuenta',
+                                ),
+                              ),
+                            );
+                          }
                         }
                       },
                       child: const Text('Crear Cuenta',
@@ -145,11 +160,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
           lastDate: DateTime.now(),
         );
         if (pickedDate != null) {
-          _birthDateController.text =
-              "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+          setState(() {
+            _selectedBirthDate = pickedDate;
+            _birthDateController.text = _formatDateForDisplay(pickedDate);
+          });
         }
       },
     );
+  }
+
+  String _formatDateForDisplay(DateTime date) {
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final year = date.year.toString();
+    return "$day/$month/$year";
+  }
+
+  String _formatDateForBackend(DateTime date) {
+    final year = date.year.toString();
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return "$year-$month-$day";
   }
 }
 

@@ -17,11 +17,8 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
   @override
   void initState() {
     super.initState();
-    final user = AuthService.instance.currentUser ??
-        AuthService.instance.registeredUser;
-
-    _emailController =
-        TextEditingController(text: user?.email ?? '');
+    final user = AuthService.instance.currentUser;
+    _emailController = TextEditingController(text: user?.correo ?? '');
     _codeController = TextEditingController();
   }
 

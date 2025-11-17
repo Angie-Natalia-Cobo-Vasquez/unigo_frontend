@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/user.dart';
+import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/bottom_navbar.dart';
@@ -35,11 +35,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = AuthService.instance.currentUser ??
-        AuthService.instance.registeredUser ??
-        const User(
-          firstName: '',
-          lastName: '',
-          email: '',
+        const UserModel(
+          nombres: '',
+          apellidos: '',
+          correo: '',
+          telefono: '',
           password: '',
           birthDate: '',
         );
@@ -140,7 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      user.email.isEmpty ? 'Correo no disponible' : user.email,
+                      user.correo.isEmpty ? 'Correo no disponible' : user.correo,
                       style: const TextStyle(
                         color: AppColors.textSecondary,
                       ),
@@ -178,7 +178,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(height: 12),
                     _InfoRow(label: 'Fecha de nacimiento', value: user.birthDate.isEmpty ? 'No registrada' : user.birthDate),
                     SizedBox(height: 12),
-                    _InfoRow(label: 'Teléfono', value: user.phone.isEmpty ? 'No registrado' : user.phone),
+                    _InfoRow(label: 'Teléfono', value: user.telefono.isEmpty ? 'No registrado' : user.telefono),
                   ],
                 ),
               ),
