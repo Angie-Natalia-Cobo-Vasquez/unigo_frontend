@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../models/booking_details.dart';
+import '../../models/trip.dart';
+import '../../repositories/trip_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/bottom_navbar.dart';
 
@@ -13,6 +16,7 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   int _currentIndex = 1;
   final TextEditingController _nequiController = TextEditingController();
+  final TripRepository _tripRepository = TripRepository();
 
   void _onNavTap(int index) {
     if (_currentIndex == index) return;
@@ -41,6 +45,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final booking =
+        ModalRoute.of(context)?.settings.arguments as BookingDetails?;
+    final driver = booking?.driver;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -166,21 +174,68 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             borderRadius: BorderRadius.circular(26),
                           ),
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           final number = _nequiController.text.trim();
                           if (number.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Ingresa tu número de Nequi')), 
+                              const SnackBar(
+                                content: Text('Ingresa tu número de Nequi'),
+                              ),
                             );
                             return;
                           }
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Pago con Nequi registrado para $number'),
-                            ),
-                          );
+                          FocusScope.of(context).unfocus();
                           _nequiController.clear();
+
+                          Trip? createdTrip;
+                          if (driver != null && booking != null) {
+                            createdTrip = Trip(
+                              passengerName: driver.name,
+                              career: driver.profession,
+                              city: driver.city,
+                              timeRange: booking.formattedSchedule,
+                              price: driver.ridePrice,
+                              status: TripStatus.confirmed,
+                              imageUrl: driver.imageUrl,
+                            );
+                            await _tripRepository.addTrip(createdTrip);
+                          }
+
+                          final successMessage = driver != null
+                              ? 'Viaje reservado con éxito con ${driver.name}.'
+                              : 'Viaje reservado con éxito.';
+
+                          await showDialog<void>(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (dialogContext) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                title: const Text(
+                                  '¡Viaje reservado!',
+                                  style: TextStyle(fontWeight: FontWeight.w700),
+                                ),
+                                content: Text(successMessage),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(dialogContext).pop(),
+                                    child: const Text('Aceptar'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+
+                          if (!mounted) return;
+                          Navigator.pushNamedAndRemoveUntil(
+                            context,
+                            '/myTrips',
+                            (route) => false,
+                          );
                         },
                         child: const Text(
                           'Guardar',

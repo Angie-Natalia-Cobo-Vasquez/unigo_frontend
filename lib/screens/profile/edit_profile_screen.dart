@@ -24,7 +24,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    final user = AuthService.instance.currentUser ??
+    final user =
+        AuthService.instance.currentUser ??
         const UserModel(
           nombres: '',
           apellidos: '',
@@ -59,7 +60,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (currentUser == null) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No hay información de usuario para editar')),
+        const SnackBar(
+          content: Text('No hay información de usuario para editar'),
+        ),
       );
       return;
     }
@@ -76,9 +79,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
 
     final success = await AuthService.instance.updateProfile(updatedUser);
-    
+
     if (!mounted) return;
-    
+
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Perfil actualizado correctamente')),
@@ -87,7 +90,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AuthService.instance.error ?? 'Error al actualizar el perfil'),
+          content: Text(
+            AuthService.instance.error ?? 'Error al actualizar el perfil',
+          ),
         ),
       );
     }
@@ -140,7 +145,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   children: [
                     ClipOval(
                       child: Image.asset(
-                        'assets/icons/image.png',
+                        'assets/icons/profile.jpg',
                         width: 180,
                         height: 180,
                         fit: BoxFit.cover,
@@ -169,17 +174,35 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
               ),
               const SizedBox(height: 40),
-              _RoundedField(controller: _nameController),
-              const SizedBox(height: 16),
-              _RoundedField(controller: _emailController, keyboardType: TextInputType.emailAddress),
-              const SizedBox(height: 16),
-              _RoundedField(controller: _passwordController, obscureText: true),
-              const SizedBox(height: 16),
-              _RoundedField(controller: _programController),
-              const SizedBox(height: 16),
-              _RoundedField(controller: _birthDateController),
+              _RoundedField(
+                label: 'Nombre completo',
+                controller: _nameController,
+              ),
               const SizedBox(height: 16),
               _RoundedField(
+                label: 'Correo electrónico',
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+              ),
+              /*const SizedBox(height: 16),
+              _RoundedField(
+                label: 'Contraseña',
+                controller: _passwordController,
+                obscureText: true,
+              ),*/
+              const SizedBox(height: 16),
+              _RoundedField(
+                label: 'Programa académico',
+                controller: _programController,
+              ),
+              const SizedBox(height: 16),
+              _RoundedField(
+                label: 'Fecha de nacimiento',
+                controller: _birthDateController,
+              ),
+              const SizedBox(height: 16),
+              _RoundedField(
+                label: 'Teléfono',
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
               ),
@@ -218,11 +241,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 }
 
 class _RoundedField extends StatelessWidget {
+  final String label;
   final TextEditingController controller;
   final TextInputType keyboardType;
   final bool obscureText;
 
   const _RoundedField({
+    required this.label,
     required this.controller,
     this.keyboardType = TextInputType.text,
     this.obscureText = false,
@@ -230,27 +255,38 @@ class _RoundedField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x11000000),
-            blurRadius: 12,
-            offset: Offset(0, 8),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w600,
           ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 18),
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        obscureText: obscureText,
-        decoration: const InputDecoration(
-          border: InputBorder.none,
         ),
-      ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(22),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x11000000),
+                blurRadius: 12,
+                offset: Offset(0, 8),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 18),
+          child: TextField(
+            controller: controller,
+            keyboardType: keyboardType,
+            obscureText: obscureText,
+            decoration: const InputDecoration(border: InputBorder.none),
+          ),
+        ),
+      ],
     );
   }
 }

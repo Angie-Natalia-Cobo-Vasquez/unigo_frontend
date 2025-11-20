@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../models/trip.dart';
+import '../../repositories/trip_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/bottom_navbar.dart';
 
@@ -11,37 +13,15 @@ class MyTripsScreen extends StatefulWidget {
 }
 
 class _MyTripsScreenState extends State<MyTripsScreen> {
-  final List<_TripItem> trips = const [
-    _TripItem(
-      passengerName: 'Daniela Jojoa',
-      career: 'Psicología',
-      city: 'Buga',
-      timeRange: '6:30 PM-10:00 PM',
-      price: 8000,
-      status: TripStatus.confirmed,
-      imagePath: 'assets/images/Daniela.png',
-    ),
-    _TripItem(
-      passengerName: 'Pedro Lucumí',
-      career: 'Derecho',
-      city: 'Buenaventura',
-      timeRange: '6:30 PM-10:00 PM',
-      price: 10000,
-      status: TripStatus.cancelled,
-      imagePath: 'assets/images/Pedro.png',
-    ),
-    _TripItem(
-      passengerName: 'Giamcito-kun',
-      career: 'Medicina',
-      city: 'Trujillo',
-      timeRange: '6:30 PM-10:00 PM',
-      price: 15000,
-      status: TripStatus.completed,
-      imagePath: 'assets/images/kun.png',
-    ),
-  ];
-
+  final TripRepository _tripRepository = TripRepository();
+  TripStatus? _statusFilter;
   int _currentIndex = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _tripRepository.getTrips();
+  }
 
   void _onNavTap(int index) {
     if (_currentIndex == index) return;
@@ -58,6 +38,26 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
       case 3:
         Navigator.pushReplacementNamed(context, '/profile');
         break;
+    }
+  }
+
+  List<Trip> _filterTrips(List<Trip> trips) {
+    if (_statusFilter == null) return trips;
+    return trips.where((trip) => trip.status == _statusFilter).toList();
+  }
+
+  Future<void> _handleCancelTrip(Trip trip) async {
+    final result = await Navigator.pushNamed(
+      context,
+      '/cancelTrip',
+      arguments: trip,
+    );
+
+    if (!mounted) return;
+    if (result == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Viaje cancelado correctamente.')),
+      );
     }
   }
 
@@ -106,20 +106,52 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                 ],
               ),
               const SizedBox(height: 24),
+              _TripStatusFilters(
+                selected: _statusFilter,
+                onSelected: (status) => setState(() => _statusFilter = status),
+              ),
+              const SizedBox(height: 16),
               Expanded(
-                child: ListView.separated(
-                  itemCount: trips.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 16),
-                  itemBuilder: (context, index) {
-                    final trip = trips[index];
-                    return _TripCard(
-                      trip: trip,
-                      onCancel: trip.status == TripStatus.confirmed
-                          ? () => Navigator.pushNamed(context, '/cancelTrip')
-                          : null,
-                      onRate: trip.status == TripStatus.completed
-                          ? () => Navigator.pushNamed(context, '/driverRating')
-                          : null,
+                child: StreamBuilder<List<Trip>>(
+                  stream: _tripRepository.watchTrips(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting &&
+                        !snapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return const Center(
+                        child: Text('No se pudieron cargar los viajes.'),
+                      );
+                    }
+
+                    final trips = _filterTrips(snapshot.data ?? []);
+                    if (trips.isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'No tienes viajes en esta categoría todavía.',
+                        ),
+                      );
+                    }
+
+                    return ListView.separated(
+                      itemCount: trips.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 16),
+                      itemBuilder: (context, index) {
+                        final trip = trips[index];
+                        return _TripCard(
+                          trip: trip,
+                          onCancel: trip.status == TripStatus.confirmed
+                              ? () => _handleCancelTrip(trip)
+                              : null,
+                          onRate: trip.status == TripStatus.completed
+                              ? () => Navigator.pushNamed(
+                                  context,
+                                  '/driverRating',
+                                )
+                              : null,
+                        );
+                      },
                     );
                   },
                 ),
@@ -136,38 +168,63 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
   }
 }
 
-enum TripStatus { confirmed, cancelled, completed }
+class _TripStatusFilters extends StatelessWidget {
+  const _TripStatusFilters({required this.selected, required this.onSelected});
 
-class _TripItem {
-  final String passengerName;
-  final String career;
-  final String city;
-  final String timeRange;
-  final int price;
-  final TripStatus status;
-  final String imagePath;
+  final TripStatus? selected;
+  final ValueChanged<TripStatus?> onSelected;
 
-  const _TripItem({
-    required this.passengerName,
-    required this.career,
-    required this.city,
-    required this.timeRange,
-    required this.price,
-    required this.status,
-    required this.imagePath,
-  });
+  @override
+  Widget build(BuildContext context) {
+    const options = <TripStatus?>[
+      null,
+      TripStatus.confirmed,
+      TripStatus.completed,
+      TripStatus.cancelled,
+    ];
+
+    String labelFor(TripStatus? status) {
+      switch (status) {
+        case null:
+          return 'Todos';
+        case TripStatus.confirmed:
+          return 'Reservados';
+        case TripStatus.completed:
+          return 'Completados';
+        case TripStatus.cancelled:
+          return 'Cancelados';
+      }
+    }
+
+    return Wrap(
+      spacing: 12,
+      children: options.map((status) {
+        final isSelected = selected == status;
+        return ChoiceChip(
+          label: Text(labelFor(status)),
+          selected: isSelected,
+          onSelected: (_) => onSelected(isSelected ? null : status),
+          backgroundColor: Colors.white,
+          selectedColor: AppColors.secondary,
+          labelStyle: TextStyle(
+            color: isSelected ? Colors.white : AppColors.textSecondary,
+            fontWeight: FontWeight.w600,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        );
+      }).toList(),
+    );
+  }
 }
 
 class _TripCard extends StatelessWidget {
-  final _TripItem trip;
+  final Trip trip;
   final VoidCallback? onCancel;
   final VoidCallback? onRate;
 
-  const _TripCard({
-    required this.trip,
-    this.onCancel,
-    this.onRate,
-  });
+  const _TripCard({required this.trip, this.onCancel, this.onRate});
 
   Color get _statusColor {
     switch (trip.status) {
@@ -213,7 +270,10 @@ class _TripCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: _statusColor,
                   borderRadius: BorderRadius.circular(20),
@@ -241,7 +301,7 @@ class _TripCard extends StatelessWidget {
             children: [
               ClipOval(
                 child: Image.asset(
-                  trip.imagePath,
+                  trip.imageUrl,
                   width: 60,
                   height: 60,
                   fit: BoxFit.cover,
@@ -271,8 +331,11 @@ class _TripCard extends StatelessWidget {
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        const Icon(Icons.location_on_outlined,
-                            size: 16, color: AppColors.secondary),
+                        const Icon(
+                          Icons.location_on_outlined,
+                          size: 16,
+                          color: AppColors.secondary,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           trip.city,
@@ -294,7 +357,11 @@ class _TripCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.access_time, size: 18, color: AppColors.secondary),
+                  const Icon(
+                    Icons.access_time,
+                    size: 18,
+                    color: AppColors.secondary,
+                  ),
                   const SizedBox(width: 6),
                   Text(
                     trip.timeRange,
@@ -305,14 +372,28 @@ class _TripCard extends StatelessWidget {
                   ),
                 ],
               ),
+              if (onCancel != null)
+                TextButton(
+                  onPressed: onCancel,
+                  child: const Text(
+                    'Cancelar',
+                    style: TextStyle(
+                      color: Color(0xFFE35757),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
               if (onRate != null)
                 TextButton(
                   onPressed: onRate,
                   child: const Text(
                     'Calificar',
-                    style: TextStyle(color: AppColors.secondary, fontWeight: FontWeight.w700),
+                    style: TextStyle(
+                      color: AppColors.secondary,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                )
+                ),
             ],
           ),
         ],

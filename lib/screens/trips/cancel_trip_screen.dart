@@ -1,12 +1,47 @@
 import 'package:flutter/material.dart';
 
+import '../../models/trip.dart';
+import '../../repositories/trip_repository.dart';
 import '../../theme/app_colors.dart';
 
-class CancelTripScreen extends StatelessWidget {
+class CancelTripScreen extends StatefulWidget {
   const CancelTripScreen({super.key});
 
   @override
+  State<CancelTripScreen> createState() => _CancelTripScreenState();
+}
+
+class _CancelTripScreenState extends State<CancelTripScreen> {
+  bool _isProcessing = false;
+
+  Future<void> _confirmCancellation(Trip? trip) async {
+    if (trip == null) {
+      if (mounted) Navigator.pop(context, false);
+      return;
+    }
+
+    setState(() => _isProcessing = true);
+    final removed = await TripRepository().removeTrip(trip);
+
+    if (!mounted) return;
+    setState(() => _isProcessing = false);
+
+    if (!removed) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No se pudo cancelar el viaje. Intenta nuevamente.'),
+        ),
+      );
+      return;
+    }
+
+    Navigator.pop(context, true);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final trip = ModalRoute.of(context)?.settings.arguments as Trip?;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -61,7 +96,11 @@ class CancelTripScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    const Icon(Icons.info_outline, color: AppColors.secondary, size: 48),
+                    const Icon(
+                      Icons.info_outline,
+                      color: AppColors.secondary,
+                      size: 48,
+                    ),
                     const SizedBox(height: 16),
                     const Text(
                       '¿Está seguro que quiere cancelar el viaje?',
@@ -92,7 +131,9 @@ class CancelTripScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(26),
                               ),
                             ),
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: _isProcessing
+                                ? null
+                                : () => Navigator.pop(context, false),
                             child: const Text(
                               'Cancelar',
                               style: TextStyle(
@@ -111,14 +152,27 @@ class CancelTripScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(26),
                               ),
                             ),
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text(
-                              'Sí, cancelar',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                            onPressed: _isProcessing
+                                ? null
+                                : () => _confirmCancellation(trip),
+                            child: _isProcessing
+                                ? const SizedBox(
+                                    height: 22,
+                                    width: 22,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.5,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                : const Text(
+                                    'Sí, cancelar',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                           ),
                         ),
                       ],

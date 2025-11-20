@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/driver.dart';
+import '../../repositories/driver_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/bottom_navbar.dart';
 
@@ -12,34 +13,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final drivers = const [
-    Driver(
-      name: 'Adrián Saavedra',
-      profession: 'Ingeniería Industrial',
-      vehicle: 'Moto',
-      rating: 4.5,
-      reviews: 12,
-      passengers: 32,
-      bio:
-          'Soy Adrián Saavedra, estudiante de 5 semestre de Ingeniería Industrial en la UCEVA. Vivo en Buga y estaría encantado de llevarte. Leer más...',
-      imageUrl: 'assets/images/adrian.png',
-      ridePrice: 8000,
-      city: 'Buga',
-    ),
-    Driver(
-      name: 'Daniela Hernández',
-      profession: 'Psicóloga',
-      vehicle: 'Carro',
-      rating: 4.9,
-      reviews: 18,
-      passengers: 48,
-      bio:
-          'Conozco las rutas más rápidas y cómodas para llevarte a clase. Seguridad y puntualidad garantizadas.',
-      imageUrl: 'assets/images/Hernandez.png',
-      ridePrice: 10000,
-      city: 'Andalucía',
-    ),
-  ];
+  final DriverRepository _driverRepository = DriverRepository();
+
+  late final Future<List<Driver>> _driversFuture = _driverRepository
+      .getDrivers();
 
   int _currentIndex = 0;
 
@@ -130,10 +107,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     child: Row(
                       children: [
-                        const Icon(Icons.search, color: AppColors.textSecondary),
+                        const Icon(
+                          Icons.search,
+                          color: AppColors.textSecondary,
+                        ),
                         const SizedBox(width: 12),
                         const Expanded(
                           child: Text(
@@ -142,8 +125,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () => Navigator.pushNamed(context, '/filterTrips'),
-                          child: const Icon(Icons.tune, color: AppColors.secondary),
+                          onTap: () =>
+                              Navigator.pushNamed(context, '/filterTrips'),
+                          child: const Icon(
+                            Icons.tune,
+                            color: AppColors.secondary,
+                          ),
                         ),
                       ],
                     ),
@@ -163,7 +150,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: const [
                       _ServiceCard(title: 'Moto', icon: Icons.two_wheeler),
                       _ServiceCard(title: 'Carro', icon: Icons.directions_car),
-                      _ServiceCard(title: 'Serv. Público', icon: Icons.directions_bus),
+                      _ServiceCard(
+                        title: 'Serv. Público',
+                        icon: Icons.directions_bus,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 30),
@@ -191,12 +181,33 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                itemCount: drivers.length,
-                itemBuilder: (context, index) {
-                  final driver = drivers[index];
-                  return _DriverCard(driver: driver);
+              child: FutureBuilder<List<Driver>>(
+                future: _driversFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text(
+                        'Hubo un problema al cargar los conductores.',
+                      ),
+                    );
+                  }
+                  final drivers = snapshot.data ?? [];
+                  if (drivers.isEmpty) {
+                    return const Center(
+                      child: Text('No hay conductores disponibles por ahora.'),
+                    );
+                  }
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    itemCount: drivers.length,
+                    itemBuilder: (context, index) {
+                      final driver = drivers[index];
+                      return _DriverCard(driver: driver);
+                    },
+                  );
                 },
               ),
             ),
@@ -215,10 +226,7 @@ class _ServiceCard extends StatelessWidget {
   final String title;
   final IconData icon;
 
-  const _ServiceCard({
-    required this.title,
-    required this.icon,
-  });
+  const _ServiceCard({required this.title, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -261,7 +269,8 @@ class _DriverCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, '/driverProfile', arguments: driver),
+      onTap: () =>
+          Navigator.pushNamed(context, '/driverProfile', arguments: driver),
       child: Container(
         margin: const EdgeInsets.only(bottom: 18),
         decoration: BoxDecoration(
@@ -290,7 +299,10 @@ class _DriverCard extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 18,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -313,7 +325,11 @@ class _DriverCard extends StatelessWidget {
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        const Icon(Icons.star, color: AppColors.warning, size: 18),
+                        const Icon(
+                          Icons.star,
+                          color: AppColors.warning,
+                          size: 18,
+                        ),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
@@ -330,7 +346,10 @@ class _DriverCard extends StatelessWidget {
                         const SizedBox(width: 12),
                         Flexible(
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.neutral,
                               borderRadius: BorderRadius.circular(14),
@@ -354,7 +373,11 @@ class _DriverCard extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.location_on_outlined, size: 18, color: AppColors.secondary),
+                            const Icon(
+                              Icons.location_on_outlined,
+                              size: 18,
+                              color: AppColors.secondary,
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               driver.city,

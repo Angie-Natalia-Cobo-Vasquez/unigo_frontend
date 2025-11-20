@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/driver.dart';
+import '../../repositories/favorite_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/bottom_navbar.dart';
 
@@ -12,12 +13,14 @@ class DriverProfileScreen extends StatefulWidget {
 }
 
 class _DriverProfileScreenState extends State<DriverProfileScreen> {
+  final FavoriteRepository _favoriteRepository = FavoriteRepository();
   bool isFavorite = false;
   int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    final driver = ModalRoute.of(context)?.settings.arguments as Driver? ??
+    final driver =
+        ModalRoute.of(context)?.settings.arguments as Driver? ??
         const Driver(
           name: 'Adrián Saavedra',
           profession: 'Ingeniería Industrial',
@@ -32,6 +35,8 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
           city: 'Buga',
         );
 
+    isFavorite = _favoriteRepository.isFavorite(driver);
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -39,7 +44,10 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -70,7 +78,12 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () => setState(() => isFavorite = !isFavorite),
+                      onTap: () {
+                        final updated = _favoriteRepository.toggleFavorite(
+                          driver,
+                        );
+                        setState(() => isFavorite = updated);
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: const BoxDecoration(
@@ -132,7 +145,11 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                             Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.star, color: AppColors.warning, size: 20),
+                                const Icon(
+                                  Icons.star,
+                                  color: AppColors.warning,
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   '${driver.rating.toStringAsFixed(1)}',
@@ -167,10 +184,26 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _IconStat(label: 'Pasajeros', value: '${driver.passengers}+', icon: Icons.people_outline),
-                        _IconStat(label: 'Vehículo', value: driver.vehicle, icon: Icons.check_circle_outline),
-                        _IconStat(label: 'Calificación', value: driver.rating.toStringAsFixed(1), icon: Icons.star_border),
-                        _IconStat(label: 'Reseñas', value: '${driver.reviews}+', icon: Icons.chat_bubble_outline),
+                        _IconStat(
+                          label: 'Pasajeros',
+                          value: '${driver.passengers}+',
+                          icon: Icons.people_outline,
+                        ),
+                        _IconStat(
+                          label: 'Vehículo',
+                          value: driver.vehicle,
+                          icon: Icons.check_circle_outline,
+                        ),
+                        _IconStat(
+                          label: 'Calificación',
+                          value: driver.rating.toStringAsFixed(1),
+                          icon: Icons.star_border,
+                        ),
+                        _IconStat(
+                          label: 'Reseñas',
+                          value: '${driver.reviews}+',
+                          icon: Icons.chat_bubble_outline,
+                        ),
                       ],
                     ),
                     const SizedBox(height: 28),
@@ -274,10 +307,7 @@ class _IconStat extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: 12,
-          ),
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
         ),
       ],
     );

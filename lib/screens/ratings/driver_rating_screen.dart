@@ -87,7 +87,7 @@ class _DriverRatingScreenState extends State<DriverRatingScreen> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(24),
                       child: Image.asset(
-                        'assets/icons/image.png',
+                        'assets/images/Pedro.png',
                         width: 220,
                         height: 150,
                         fit: BoxFit.cover,
@@ -95,7 +95,7 @@ class _DriverRatingScreenState extends State<DriverRatingScreen> {
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      'Adrián Saavedra',
+                      'Pedro Lucumí',
                       style: TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: 20,
@@ -104,7 +104,7 @@ class _DriverRatingScreenState extends State<DriverRatingScreen> {
                     ),
                     const SizedBox(height: 4),
                     const Text(
-                      'Ingeniería Industrial',
+                      'Derecho',
                       style: TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: 13,
@@ -116,9 +116,12 @@ class _DriverRatingScreenState extends State<DriverRatingScreen> {
                       children: List.generate(5, (index) {
                         final starIndex = index + 1;
                         return IconButton(
-                          onPressed: () => setState(() => _selectedRating = starIndex),
+                          onPressed: () =>
+                              setState(() => _selectedRating = starIndex),
                           icon: Icon(
-                            starIndex <= _selectedRating ? Icons.star : Icons.star_border,
+                            starIndex <= _selectedRating
+                                ? Icons.star
+                                : Icons.star_border,
                             color: AppColors.warning,
                             size: 32,
                           ),
@@ -150,17 +153,20 @@ class _DriverRatingScreenState extends State<DriverRatingScreen> {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 12,
+                ),
                 child: TextField(
                   controller: _commentController,
                   maxLines: 5,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'Comenta aquí...'
+                    hintText: 'Comenta aquí...',
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              /*const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 height: 54,
@@ -180,7 +186,7 @@ class _DriverRatingScreenState extends State<DriverRatingScreen> {
                     ),
                   ),
                 ),
-              ),
+              ),*/
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,

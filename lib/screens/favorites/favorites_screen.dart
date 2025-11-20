@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../models/driver.dart';
+import '../../repositories/driver_repository.dart';
+import '../../repositories/favorite_repository.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/bottom_navbar.dart';
 
@@ -12,35 +14,8 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  final favoriteDrivers = const [
-    Driver(
-      name: 'Adrián Saavedra',
-      profession: 'Ingeniería Industrial',
-      vehicle: 'Moto',
-      rating: 4.5,
-      reviews: 12,
-      passengers: 32,
-      bio:
-          'Soy Adrián Saavedra, estudiante de 5 semestre de Ingeniería Industrial en la UCEVA. Vivo en Buga y estaría encantado de llevarte. Leer más...',
-      imageUrl: 'assets/images/adrian.png',
-      ridePrice: 8000,
-      city: 'Buga',
-    ),
-    Driver(
-      name: 'Daniela Hernández',
-      profession: 'Psicóloga',
-      vehicle: 'Carro',
-      rating: 4.9,
-      reviews: 18,
-      passengers: 48,
-      bio:
-          'Conozco las rutas más rápidas y cómodas para llevarte a clase. Seguridad y puntualidad garantizadas.',
-      imageUrl: 'assets/images/Hernandez.png',
-      ridePrice: 10000,
-      city: 'Andalucía',
-    ),
-  ];
-
+  late Future<List<Driver>> _driversFuture;
+  final FavoriteRepository _favoriteRepository = FavoriteRepository();
   int _currentIndex = 2;
 
   void _onNavTap(int index) {
@@ -62,6 +37,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _driversFuture = DriverRepository().getDrivers();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -73,7 +54,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               Row(
                 children: [
                   GestureDetector(
-                    onTap: () => Navigator.pushReplacementNamed(context, '/home'),
+                    onTap: () =>
+                        Navigator.pushReplacementNamed(context, '/home'),
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: const BoxDecoration(
@@ -103,11 +85,48 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               ),
               const SizedBox(height: 24),
               Expanded(
-                child: ListView.builder(
-                  itemCount: favoriteDrivers.length,
-                  itemBuilder: (context, index) {
-                    final driver = favoriteDrivers[index];
-                    return _FavoriteCard(driver: driver);
+                child: FutureBuilder<List<Driver>>(
+                  future: _driversFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return const Center(
+                        child: Text(
+                          'Hubo un problema al cargar los conductores.',
+                        ),
+                      );
+                    }
+                    final drivers = snapshot.data ?? [];
+                    return ValueListenableBuilder<Set<String>>(
+                      valueListenable: _favoriteRepository.watchFavorites(),
+                      builder: (context, favorites, _) {
+                        final filtered = drivers
+                            .where(
+                              (driver) => favorites.contains(
+                                _favoriteRepository.driverKey(driver),
+                              ),
+                            )
+                            .toList();
+
+                        if (filtered.isEmpty) {
+                          return const Center(
+                            child: Text(
+                              'No tienes conductores favoritos todavía.',
+                            ),
+                          );
+                        }
+
+                        return ListView.builder(
+                          itemCount: filtered.length,
+                          itemBuilder: (context, index) {
+                            final driver = filtered[index];
+                            return _FavoriteCard(driver: driver);
+                          },
+                        );
+                      },
+                    );
                   },
                 ),
               ),
@@ -189,7 +208,11 @@ class _FavoriteCard extends StatelessWidget {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      const Icon(Icons.star, color: AppColors.warning, size: 18),
+                      const Icon(
+                        Icons.star,
+                        color: AppColors.warning,
+                        size: 18,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         driver.rating.toStringAsFixed(1),

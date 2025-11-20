@@ -14,6 +14,28 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   int _currentIndex = 3;
+  UserModel? _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
+
+  void _loadUser() {
+    setState(() {
+      _user =
+          AuthService.instance.currentUser ??
+          const UserModel(
+            nombres: '',
+            apellidos: '',
+            correo: '',
+            telefono: '',
+            password: '',
+            birthDate: '',
+          );
+    });
+  }
 
   void _onNavTap(int index) {
     if (_currentIndex == index) return;
@@ -34,7 +56,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = AuthService.instance.currentUser ??
+    final user =
+        _user ??
         const UserModel(
           nombres: '',
           apellidos: '',
@@ -57,7 +80,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Row(
                     children: [
                       GestureDetector(
-                        onTap: () => Navigator.pushReplacementNamed(context, '/home'),
+                        onTap: () =>
+                            Navigator.pushReplacementNamed(context, '/home'),
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: const BoxDecoration(
@@ -86,9 +110,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                   GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, '/editProfile'),
+                    onTap: () async {
+                      final updated = await Navigator.pushNamed(
+                        context,
+                        '/editProfile',
+                      );
+                      if (updated == true && mounted) {
+                        _loadUser();
+                      }
+                    },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
@@ -102,7 +137,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       child: Row(
                         children: const [
-                          Icon(Icons.edit_outlined, color: AppColors.secondary, size: 18),
+                          Icon(
+                            Icons.edit_outlined,
+                            color: AppColors.secondary,
+                            size: 18,
+                          ),
                           SizedBox(width: 6),
                           Text(
                             'Editar',
@@ -123,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     ClipOval(
                       child: Image.asset(
-                        'assets/icons/image.png',
+                        'assets/icons/profile.jpg',
                         width: 150,
                         height: 150,
                         fit: BoxFit.cover,
@@ -131,7 +170,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      user.fullName.isEmpty ? 'Nombre no disponible' : user.fullName,
+                      user.fullName.isEmpty
+                          ? 'Nombre no disponible'
+                          : user.fullName,
                       style: const TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: 20,
@@ -140,10 +181,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      user.correo.isEmpty ? 'Correo no disponible' : user.correo,
-                      style: const TextStyle(
-                        color: AppColors.textSecondary,
-                      ),
+                      user.correo.isEmpty
+                          ? 'Correo no disponible'
+                          : user.correo,
+                      style: const TextStyle(color: AppColors.textSecondary),
                     ),
                   ],
                 ),
@@ -174,11 +215,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     SizedBox(height: 16),
-                    _InfoRow(label: 'Programa', value: user.program.isEmpty ? 'No registrado' : user.program),
+                    _InfoRow(
+                      label: 'Programa',
+                      value: user.program.isEmpty
+                          ? 'No registrado'
+                          : user.program,
+                    ),
                     SizedBox(height: 12),
-                    _InfoRow(label: 'Fecha de nacimiento', value: user.birthDate.isEmpty ? 'No registrada' : user.birthDate),
+                    _InfoRow(
+                      label: 'Fecha de nacimiento',
+                      value: user.birthDate.isEmpty
+                          ? 'No registrada'
+                          : user.birthDate,
+                    ),
                     SizedBox(height: 12),
-                    _InfoRow(label: 'Teléfono', value: user.telefono.isEmpty ? 'No registrado' : user.telefono),
+                    _InfoRow(
+                      label: 'Teléfono',
+                      value: user.telefono.isEmpty
+                          ? 'No registrado'
+                          : user.telefono,
+                    ),
                   ],
                 ),
               ),
@@ -209,11 +265,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    const _StatItem(icon: Icons.calendar_month_outlined, label: 'Viajes reservados', value: '12'),
+                    const _StatItem(
+                      icon: Icons.calendar_month_outlined,
+                      label: 'Viajes reservados',
+                      value: '12',
+                    ),
                     const SizedBox(height: 14),
-                    const _StatItem(icon: Icons.check_circle_outline, label: 'Viajes completados', value: '9'),
+                    const _StatItem(
+                      icon: Icons.check_circle_outline,
+                      label: 'Viajes completados',
+                      value: '9',
+                    ),
                     const SizedBox(height: 14),
-                    const _StatItem(icon: Icons.star_border, label: 'Calificación promedio', value: '4.7'),
+                    const _StatItem(
+                      icon: Icons.star_border,
+                      label: 'Calificación promedio',
+                      value: '4.7',
+                    ),
                     const SizedBox(height: 20),
                     // Logout Button
                     SizedBox(
@@ -233,7 +301,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
-                            side: BorderSide(color: Colors.red.shade200, width: 1),
+                            side: BorderSide(
+                              color: Colors.red.shade200,
+                              width: 1,
+                            ),
                           ),
                           elevation: 0,
                         ),

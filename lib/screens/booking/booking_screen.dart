@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../models/booking_details.dart';
 import '../../models/driver.dart';
 import '../../theme/app_colors.dart';
 import '../../widgets/bottom_navbar.dart';
@@ -140,7 +141,10 @@ class _BookingScreenState extends State<BookingScreen> {
                                   ),
                                   const SizedBox(height: 8),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: AppColors.neutral,
                                       borderRadius: BorderRadius.circular(14),
@@ -174,12 +178,15 @@ class _BookingScreenState extends State<BookingScreen> {
                         children: List.generate(days.length, (index) {
                           final isSelected = selectedDayIndex == index;
                           return GestureDetector(
-                            onTap: () => setState(() => selectedDayIndex = index),
+                            onTap: () =>
+                                setState(() => selectedDayIndex = index),
                             child: Container(
                               width: 56,
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               decoration: BoxDecoration(
-                                color: isSelected ? AppColors.secondary : Colors.white,
+                                color: isSelected
+                                    ? AppColors.secondary
+                                    : Colors.white,
                                 borderRadius: BorderRadius.circular(18),
                                 boxShadow: const [
                                   BoxShadow(
@@ -194,7 +201,9 @@ class _BookingScreenState extends State<BookingScreen> {
                                   Text(
                                     days[index],
                                     style: TextStyle(
-                                      color: isSelected ? Colors.white : AppColors.textSecondary,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : AppColors.textSecondary,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -202,7 +211,9 @@ class _BookingScreenState extends State<BookingScreen> {
                                   Text(
                                     dates[index],
                                     style: TextStyle(
-                                      color: isSelected ? Colors.white : AppColors.textPrimary,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : AppColors.textPrimary,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -233,15 +244,20 @@ class _BookingScreenState extends State<BookingScreen> {
                             backgroundColor: Colors.white,
                             selectedColor: AppColors.secondary,
                             labelStyle: TextStyle(
-                              color: isSelected ? Colors.white : AppColors.textSecondary,
+                              color: isSelected
+                                  ? Colors.white
+                                  : AppColors.textSecondary,
                               fontWeight: FontWeight.w600,
                             ),
-                            onSelected: (_) => setState(() => selectedTimeIndex = index),
+                            onSelected: (_) =>
+                                setState(() => selectedTimeIndex = index),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18),
                             ),
                             side: BorderSide(
-                              color: isSelected ? AppColors.secondary : Colors.transparent,
+                              color: isSelected
+                                  ? AppColors.secondary
+                                  : Colors.transparent,
                             ),
                           );
                         }),
@@ -261,13 +277,20 @@ class _BookingScreenState extends State<BookingScreen> {
                           final isSelected = selectedSeats == index;
                           return Expanded(
                             child: Padding(
-                              padding: EdgeInsets.only(right: index == seats.length - 1 ? 0 : 12),
+                              padding: EdgeInsets.only(
+                                right: index == seats.length - 1 ? 0 : 12,
+                              ),
                               child: GestureDetector(
-                                onTap: () => setState(() => selectedSeats = index),
+                                onTap: () =>
+                                    setState(() => selectedSeats = index),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: isSelected ? AppColors.success : Colors.white,
+                                    color: isSelected
+                                        ? AppColors.success
+                                        : Colors.white,
                                     borderRadius: BorderRadius.circular(18),
                                     boxShadow: const [
                                       BoxShadow(
@@ -281,13 +304,17 @@ class _BookingScreenState extends State<BookingScreen> {
                                     children: [
                                       Icon(
                                         Icons.event_seat,
-                                        color: isSelected ? Colors.white : AppColors.textSecondary,
+                                        color: isSelected
+                                            ? Colors.white
+                                            : AppColors.textSecondary,
                                       ),
                                       const SizedBox(height: 6),
                                       Text(
                                         seats[index],
                                         style: TextStyle(
-                                          color: isSelected ? Colors.white : AppColors.textPrimary,
+                                          color: isSelected
+                                              ? Colors.white
+                                              : AppColors.textPrimary,
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
@@ -310,7 +337,23 @@ class _BookingScreenState extends State<BookingScreen> {
                               borderRadius: BorderRadius.circular(26),
                             ),
                           ),
-                          onPressed: () => Navigator.pushNamed(context, '/payment', arguments: driver),
+                          onPressed: driver == null
+                              ? null
+                              : () {
+                                  final booking = BookingDetails(
+                                    driver: driver,
+                                    dayLabel: days[selectedDayIndex],
+                                    dateLabel: dates[selectedDayIndex],
+                                    timeLabel: times[selectedTimeIndex],
+                                    seats: int.parse(seats[selectedSeats]),
+                                  );
+
+                                  Navigator.pushNamed(
+                                    context,
+                                    '/payment',
+                                    arguments: booking,
+                                  );
+                                },
                           child: const Text(
                             'Confirmar',
                             style: TextStyle(
