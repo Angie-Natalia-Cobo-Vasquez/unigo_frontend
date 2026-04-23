@@ -132,7 +132,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   const Text(
                     'Editar perfil',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: AppColors.primary,
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),
@@ -218,7 +218,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   onPressed: _handleSave,
                   child: const Text(
-                    'Editar Perfil',
+                    'Editar perfil',
                     style: TextStyle(
                       color: Color.fromARGB(255, 255, 255, 255),
                       fontSize: 16,

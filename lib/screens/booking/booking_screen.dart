@@ -77,7 +77,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   const Text(
                     'Reservar',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: AppColors.primary,
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),
@@ -167,7 +167,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       const Text(
                         'Disponibilidad',
                         style: TextStyle(
-                          color: AppColors.textPrimary,
+                          color: AppColors.primary,
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
                         ),
@@ -228,7 +228,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       const Text(
                         'Horarios disponibles',
                         style: TextStyle(
-                          color: AppColors.textPrimary,
+                          color: AppColors.primary,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -266,7 +266,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       const Text(
                         'Cupos disponibles',
                         style: TextStyle(
-                          color: AppColors.textPrimary,
+                          color: AppColors.primary,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -332,7 +332,7 @@ class _BookingScreenState extends State<BookingScreen> {
                         height: 60,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
+                            backgroundColor: AppColors.secondary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(26),
                             ),
@@ -357,7 +357,7 @@ class _BookingScreenState extends State<BookingScreen> {
                           child: const Text(
                             'Confirmar',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: AppColors.primary,
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                             ),

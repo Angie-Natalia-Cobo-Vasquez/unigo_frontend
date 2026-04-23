@@ -73,7 +73,7 @@ class _CancelTripScreenState extends State<CancelTripScreen> {
                   const Text(
                     'Cancelar viaje',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: AppColors.primary,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                     ),
@@ -137,7 +137,7 @@ class _CancelTripScreenState extends State<CancelTripScreen> {
                             child: const Text(
                               'Cancelar',
                               style: TextStyle(
-                                color: AppColors.textPrimary,
+                                color: Colors.red,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -169,7 +169,7 @@ class _CancelTripScreenState extends State<CancelTripScreen> {
                                 : const Text(
                                     'Sí, cancelar',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: AppColors.secondary,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),

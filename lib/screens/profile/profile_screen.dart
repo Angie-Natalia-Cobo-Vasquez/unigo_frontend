@@ -102,7 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const Text(
                         'Mi perfil',
                         style: TextStyle(
-                          color: AppColors.textPrimary,
+                          color: AppColors.primary,
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
                         ),
@@ -174,7 +174,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ? 'Nombre no disponible'
                           : user.fullName,
                       style: const TextStyle(
-                        color: AppColors.textPrimary,
+                        color: AppColors.primary,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                       ),
@@ -184,7 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       user.correo.isEmpty
                           ? 'Correo no disponible'
                           : user.correo,
-                      style: const TextStyle(color: AppColors.textSecondary),
+                      style: const TextStyle(color: AppColors.primary),
                     ),
                   ],
                 ),

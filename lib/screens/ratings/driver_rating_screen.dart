@@ -73,7 +73,7 @@ class _DriverRatingScreenState extends State<DriverRatingScreen> {
                   const Text(
                     'Conductor',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: AppColors.primary,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                     ),
@@ -97,7 +97,7 @@ class _DriverRatingScreenState extends State<DriverRatingScreen> {
                     const Text(
                       'Pedro Lucumí',
                       style: TextStyle(
-                        color: AppColors.textPrimary,
+                        color: AppColors.primary,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                       ),
@@ -105,10 +105,7 @@ class _DriverRatingScreenState extends State<DriverRatingScreen> {
                     const SizedBox(height: 4),
                     const Text(
                       'Derecho',
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 13,
-                      ),
+                      style: TextStyle(color: AppColors.primary, fontSize: 13),
                     ),
                     const SizedBox(height: 16),
                     Row(
@@ -135,7 +132,7 @@ class _DriverRatingScreenState extends State<DriverRatingScreen> {
               const Text(
                 'Comparte más sobre tu experiencia',
                 style: TextStyle(
-                  color: AppColors.textPrimary,
+                  color: AppColors.primary,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),
@@ -193,7 +190,7 @@ class _DriverRatingScreenState extends State<DriverRatingScreen> {
                 height: 54,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: AppColors.secondary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(26),
                     ),

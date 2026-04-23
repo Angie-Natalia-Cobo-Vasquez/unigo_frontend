@@ -80,7 +80,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   const Text(
                     'Paga con Nequi',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: AppColors.primary,
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),
@@ -169,7 +169,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       height: 54,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: AppColors.secondary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(26),
                           ),

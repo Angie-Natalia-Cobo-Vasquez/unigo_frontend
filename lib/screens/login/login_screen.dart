@@ -30,8 +30,9 @@ class _LoginScreenState extends State<LoginScreen> {
     if (success) {
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
-    } else if (!mounted) return;
-    
+    } else if (!mounted)
+      return;
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(AuthService.instance.error ?? 'Credenciales inválidas'),
@@ -48,16 +49,23 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('UniGo',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+            const Text(
+              'DriveU',
+              style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+            ),
             Image.asset('assets/icons/image.png', height: 80),
             const SizedBox(height: 20),
-            const Text('INICIAR SESIÓN',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            const Text(
+              'INICIAR SESIÓN',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 24),
             CustomTextField(hint: 'Correo', controller: emailController),
             CustomTextField(
-                hint: 'Contraseña', obscureText: true, controller: passwordController),
+              hint: 'Contraseña',
+              obscureText: true,
+              controller: passwordController,
+            ),
             const SizedBox(height: 20),
             CustomButton(
               text: 'Entrar',
@@ -66,8 +74,10 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 12),
             GestureDetector(
               onTap: () => Navigator.pushNamed(context, '/register'),
-              child: const Text('Crear Cuenta',
-                  style: TextStyle(decoration: TextDecoration.underline)),
+              child: const Text(
+                'Crear Cuenta',
+                style: TextStyle(decoration: TextDecoration.underline),
+              ),
             ),
             const SizedBox(height: 6),
             GestureDetector(
