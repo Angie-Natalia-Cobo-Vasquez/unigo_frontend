@@ -72,7 +72,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     const Text(
                       'Conductor',
                       style: TextStyle(
-                        color: AppColors.textPrimary,
+                        color: AppColors.primary,
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                       ),
@@ -133,7 +133,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                               child: Text(
                                 driver.name,
                                 style: const TextStyle(
-                                  color: AppColors.textPrimary,
+                                  color: AppColors.primary,
                                   fontSize: 22,
                                   fontWeight: FontWeight.w700,
                                 ),
@@ -154,7 +154,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                                 Text(
                                   '${driver.rating.toStringAsFixed(1)}',
                                   style: const TextStyle(
-                                    color: AppColors.textSecondary,
+                                    color: AppColors.primary,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -166,7 +166,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                         Text(
                           driver.profession,
                           style: const TextStyle(
-                            color: AppColors.textSecondary,
+                            color: AppColors.primary,
                             fontSize: 14,
                           ),
                         ),
@@ -174,7 +174,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                         Text(
                           '(${driver.reviews} reseñas)',
                           style: const TextStyle(
-                            color: AppColors.textSecondary,
+                            color: AppColors.primary,
                             fontSize: 13,
                           ),
                         ),
@@ -210,7 +210,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     const Text(
                       'Sobre mí',
                       style: TextStyle(
-                        color: AppColors.textPrimary,
+                        color: AppColors.primary,
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                       ),
@@ -219,7 +219,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                     Text(
                       driver.bio,
                       style: const TextStyle(
-                        color: AppColors.textSecondary,
+                        color: AppColors.primary,
                         height: 1.4,
                       ),
                     ),
@@ -229,7 +229,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                       height: 60,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
+                          backgroundColor: AppColors.secondary,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(26),
                           ),
@@ -299,7 +299,7 @@ class _IconStat extends StatelessWidget {
         Text(
           value,
           style: const TextStyle(
-            color: AppColors.textPrimary,
+            color: AppColors.primary,
             fontSize: 14,
             fontWeight: FontWeight.w700,
           ),
@@ -307,7 +307,7 @@ class _IconStat extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+          style: const TextStyle(color: AppColors.primary, fontSize: 12),
         ),
       ],
     );

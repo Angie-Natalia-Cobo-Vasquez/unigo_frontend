@@ -58,9 +58,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
                           Text(
-                            'BIENVENIDO A UniGo',
+                            'BIENVENIDO A DriveU',
                             style: TextStyle(
-                              color: AppColors.textSecondary,
+                              color: Color.fromARGB(255, 255, 255, 255),
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 1.2,
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Text(
                             'Bienvenido',
                             style: TextStyle(
-                              color: AppColors.textPrimary,
+                              color: Color.fromARGB(255, 255, 255, 255),
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
                             ),
@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Container(
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white,
+                          color: Color.fromARGB(255, 255, 255, 255),
                           boxShadow: [
                             BoxShadow(
                               color: Color(0x11000000),
@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Text(
                     'Servicios',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: Color.fromARGB(255, 255, 255, 255),
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                     ),
@@ -163,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text(
                         'Conductores',
                         style: TextStyle(
-                          color: AppColors.textPrimary,
+                          color: Color.fromARGB(255, 255, 255, 255),
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
                         ),
@@ -171,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Text(
                         'Ver todos',
                         style: TextStyle(
-                          color: AppColors.secondary,
+                          color: Color.fromARGB(255, 255, 255, 255),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -274,7 +274,7 @@ class _DriverCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(bottom: 18),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: const Color.fromARGB(255, 255, 255, 255),
           borderRadius: BorderRadius.circular(24),
           boxShadow: const [
             BoxShadow(

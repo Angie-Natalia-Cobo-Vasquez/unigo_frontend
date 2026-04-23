@@ -211,7 +211,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 height: 54,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: const Color.fromARGB(255, 44, 199, 152),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(26),
                     ),
@@ -220,7 +220,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   child: const Text(
                     'Editar Perfil',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 255, 255, 255),
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -261,7 +261,7 @@ class _RoundedField extends StatelessWidget {
         Text(
           label,
           style: const TextStyle(
-            color: AppColors.textSecondary,
+            color: Color.fromARGB(255, 255, 255, 255),
             fontWeight: FontWeight.w600,
           ),
         ),

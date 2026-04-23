@@ -98,7 +98,7 @@ class _MyTripsScreenState extends State<MyTripsScreen> {
                   const Text(
                     'Mis viajes',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: AppColors.primary,
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                     ),

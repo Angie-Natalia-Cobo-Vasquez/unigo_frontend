@@ -76,7 +76,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   const Text(
                     'Mis favoritos',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: AppColors.primary,
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                     ),
