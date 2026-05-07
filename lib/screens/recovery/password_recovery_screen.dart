@@ -62,7 +62,7 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
                   const Text(
                     'Recuperación de contraseña',
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: AppColors.primary,
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),
@@ -93,7 +93,7 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
                       child: Text(
                         'Se envió a tu correo electrónico un código de confirmación para la recuperación de la contraseña.',
                         style: TextStyle(
-                          color: AppColors.textSecondary,
+                          color: AppColors.background,
                           height: 1.4,
                         ),
                       ),
@@ -105,7 +105,7 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
               const Text(
                 'Tu correo electrónico',
                 style: TextStyle(
-                  color: AppColors.textPrimary,
+                  color: AppColors.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -119,7 +119,7 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
               const Text(
                 'Código de verificación',
                 style: TextStyle(
-                  color: AppColors.textPrimary,
+                  color: AppColors.primary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -134,7 +134,7 @@ class _PasswordRecoveryScreenState extends State<PasswordRecoveryScreen> {
                 height: 54,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: AppColors.secondary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(26),
                     ),
@@ -187,10 +187,7 @@ class _RoundedField extends StatelessWidget {
       child: TextField(
         controller: controller,
         keyboardType: keyboardType,
-        decoration: InputDecoration(
-          hintText: hint,
-          border: InputBorder.none,
-        ),
+        decoration: InputDecoration(hintText: hint, border: InputBorder.none),
       ),
     );
   }

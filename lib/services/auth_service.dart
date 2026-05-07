@@ -34,7 +34,10 @@ class AuthService extends ChangeNotifier {
       final ok = response['ok'] == true;
 
       if (ok) {
-        final loginResponse = await ApiService.login(user.correo, user.password);
+        final loginResponse = await ApiService.login(
+          user.correo,
+          user.password,
+        );
         final loginOk = loginResponse['ok'] == true;
 
         if (loginOk) {
@@ -42,9 +45,13 @@ class AuthService extends ChangeNotifier {
           return true;
         }
 
-        _error = loginResponse['mensaje']?.toString() ?? 'Error al iniciar sesión tras registrarse';
+        _error =
+            loginResponse['mensaje']?.toString() ??
+            'Error al iniciar sesión tras registrarse';
       } else {
-        _error = response['mensaje']?.toString() ?? 'No se pudo registrar al usuario';
+        _error =
+            response['mensaje']?.toString() ??
+            'No se pudo registrar al usuario';
       }
 
       return false;
@@ -132,4 +139,3 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 }
-

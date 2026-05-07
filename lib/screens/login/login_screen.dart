@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:unigo_frontend/theme/app_colors.dart';
 
 import '../../services/auth_service.dart';
 import '../../widgets/custom_button.dart';
@@ -31,6 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
     } else if (!mounted)
+      /*SnackBar(
+        content: Text(AuthService.instance.error ?? 'Credenciales inválidas'),
+      );*/
       return;
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -43,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: AppColors.background,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 28.0),
         child: Column(
@@ -51,13 +56,21 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             const Text(
               'DriveU',
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
             ),
             Image.asset('assets/icons/image.png', height: 80),
             const SizedBox(height: 20),
             const Text(
               'INICIAR SESIÓN',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
             ),
             const SizedBox(height: 24),
             CustomTextField(hint: 'Correo', controller: emailController),
@@ -76,7 +89,10 @@ class _LoginScreenState extends State<LoginScreen> {
               onTap: () => Navigator.pushNamed(context, '/register'),
               child: const Text(
                 'Crear Cuenta',
-                style: TextStyle(decoration: TextDecoration.underline),
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  color: AppColors.primary,
+                ),
               ),
             ),
             const SizedBox(height: 6),
@@ -84,7 +100,10 @@ class _LoginScreenState extends State<LoginScreen> {
               onTap: () => Navigator.pushNamed(context, '/passwordRecovery'),
               child: const Text(
                 'Recuperar contraseña',
-                style: TextStyle(decoration: TextDecoration.underline),
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  color: AppColors.primary,
+                ),
               ),
             ),
           ],
